@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dining Spot Chatbot</title>
+    <style>
+        /* General page styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .chat-container {
+            width: 350px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 500px;
+        }
+
+        .chat-box {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 15px;
+            padding-bottom: 50px;
+            background-color: #fafafa;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .chat-message {
+            margin: 10px 0;
+            max-width: 80%;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .chat-message.bot {
+            background-color: #f0f0f0;
+            text-align: left;
+            margin-left: 10px;
+        }
+
+        .chat-message.user {
+            background-color: #007bff;
+            color: white;
+            text-align: right;
+            margin-right: 10px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-top: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Optional: Style for the voice command button */
+        #voice-btn {
+            margin-left: 5px;
+        }
+
+        .input-container {
+            display: flex;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="chat-container">
+        <div class="chat-box" id="chat-box">
+            <div class="chat-message bot">
+                <p>Hi! How can I assist you today? 😊</p>
+            </div>
+        </div>
+        <div class="input-container">
+            <input type="text" id="user-input" placeholder="Ask a question..." />
+            <button id="send-btn">Send</button>
+            <button id="voice-btn">Speak</button>
+        </div>
+    </div>
+
+    <script>
+        // Get elements from the DOM
+        const sendBtn = document.getElementById('send-btn');
+        const userInput = document.getElementById('user-input');
+        const chatBox = document.getElementById('chat-box');
+        const voiceBtn = document.getElementById('voice-btn'); // Get the voice button
+
+        // Initialize Speech Recognition
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition = null;
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.lang = 'en-US'; // You can set the language
+
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript.toLowerCase();
+                console.log('Voice Input:', transcript);
+                userInput.value = transcript;
+                sendMessage(); // Automatically send the voice input
+            };
+
+            recognition.onerror = function(event) {
+                console.error('Speech recognition error:', event.error);
+                displayBotMessage('Sorry, I didn\'t catch that. Could you type it in?');
+            };
+        } else {
+            console.warn('Speech recognition is not supported in this browser.');
+            displayBotMessage('Voice input is not supported in your browser.');
+            if (voiceBtn) {
+                voiceBtn.disabled = true; // Disable the voice button if not supported
+            }
+        }
+
+        // Function to display bot messages
+        function displayBotMessage(message) {
+            const botMessage = document.createElement('div');
+            botMessage.classList.add('chat-message', 'bot');
+            botMessage.innerHTML = `<p>${message}</p>`;
+            chatBox.appendChild(botMessage);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // Function to handle user input and bot responses
+        function sendMessage() {
+            const userText = userInput.value.trim();
+
+            if (userText !== '') {
+                // Display user message
+                const userMessage = document.createElement('div');
+                userMessage.classList.add('chat-message', 'user');
+                userMessage.innerHTML = `<p>${userText}</p>`;
+                chatBox.appendChild(userMessage);
+
+                // Clear the input field
+                userInput.value = '';
+
+                // Scroll chat to bottom
+                chatBox.scrollTop = chatBox.scrollHeight;
+
+                // Get bot response
+                const botResponse = getBotResponse(userText);
+
+                // Simulate AI response after a delay
+                setTimeout(() => {
+                    displayBotMessage(botResponse);
+                }, 1000);
+            }
+        }
+
+        // Simple AI logic for chatbot responses
+        function getBotResponse(query) {
+            const lowerQuery = query.toLowerCase();
+
+            if (lowerQuery.includes('your menu')) {
+                return 'We will provide a delicious food to our customers. Click menu option to explore. <a href="menu.html">Menu</a> 🍝';
+            } else if (lowerQuery.includes('online order')) {
+                return 'We also provide online orders. We serve delicious food for your home. <a href="Onilne Order.html">Online Order</a> 📦.';
+            } else if (lowerQuery.includes('your chefs')) {
+                return 'Our chefs are very experienced and talented. Here is our team: Mr. Srikanth 🧑‍🍳, Mr. Bhavyanth 🧑‍🍳, Ms. Amrutha 👩🏻‍🍳, and Ms. Hema 👩🏻‍🍳.';
+            } else if (lowerQuery.includes('room booking')) {
+                return 'We provide luxurious accommodation and also offer complimentary food to our customers. <a href="Book a Room.html">Book a Room</a>. 📅';
+            } else if (lowerQuery.includes('location') || lowerQuery.includes('address')) {
+                return 'Deton City, Texas, USA. 📍';
+            } else if (lowerQuery.includes('contact details')) {
+                return 'PH NO: 9392604717, Email: diningspot@gmail.com. ✆✉';
+            } else if (lowerQuery.includes('your timings') || lowerQuery.includes('open')) {
+                return 'We are open from 10 AM to 10 PM every day! ⏰';
+            } else if (lowerQuery.includes('thank you')) {
+                return 'You have any queries, feel free to text us. Thank You! Have a Good Day 😊';
+            } else if (lowerQuery.includes('hi')) {
+                return 'Hey! Hi, I am here to share information about our services. How may I help you 😊?';
+            } else {
+                return 'I\'m sorry, I didn\'t quite understand that. Could you ask something else? 🤔';
+            }
+        }
+
+        // Add event listener to the send button
+        sendBtn.addEventListener('click', sendMessage);
+
+        // Allow Enter key press to send message
+        userInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // --- Voice Command Functionality ---
+        if (recognition && voiceBtn) {
+            voiceBtn.addEventListener('click', function() {
+                recognition.start();
+            });
+        }
+    </script>
+
+</body>
+</html>

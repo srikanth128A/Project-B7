@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dining Spot - Festival Events</title>
+    <style>
+        /* Basic reset for margins and padding */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('https://media.istockphoto.com/id/479977238/photo/table-setting-for-an-event-party-or-wedding-reception.jpg?s=612x612&w=0&k=20&c=yIKLzW7wMydqmuItTTtUGS5cYTmrRGy0rXk81AltdTA='); /* Background image */
+            background-size: cover; /* Make the background image cover the entire page */
+            background-position: center; /* Center the background image */
+            padding: 20px;
+        }
+
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.8); /* Slight white background to make content readable */
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        h2 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        section {
+            margin-bottom: 40px;
+        }
+
+        /* Styling for the festival list section */
+        #festival-list {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        #festival-select {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        /* Hidden sections (details and booking form) */
+        .hidden {
+            display: none;
+        }
+
+        /* Festival details section */
+        #festival-details {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        #itinerary-list {
+            margin-top: 15px;
+            list-style-type: none;
+        }
+
+        #itinerary-list li {
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Booking form section */
+        #booking-form-section {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"], input[type="email"], input[type="number"] {
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        input[type="number"] {
+            width: 100px;
+        }
+
+        /* Button styles for form */
+        form button {
+            margin-top: 10px;
+            background-color: #28a745;
+        }
+
+        form button[type="button"] {
+            background-color: #dc3545;
+        }
+
+        form button[type="button"]:hover {
+            background-color: #c82333;
+        }
+
+        form button:hover {
+            background-color: #218838;
+        }
+
+        /* Confirmation message section */
+        #confirmation-section {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        #confirmation-section h2 {
+            color: #28a745;
+        }
+
+        #confirmation-details {
+            margin-top: 15px;
+        }
+
+        #confirmation-details p {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <main>
+        <section id="festival-list">
+            <h2>Select a Festival to Explore</h2>
+            <select id="festival-select">
+                <option value="">-- Select a Festival --</option>
+                <option value="diwali">Diwali Night</option>
+                <option value="christmas">Christmas Eve</option>
+                <option value="new year">New Year’s Eve Gala</option>
+                <option value="eid">Eid Celebration</option>
+                <option value="holi">Holi Bash</option>
+                <option value="thanksgiving">Thanksgiving Dinner</option>
+                <option value="food festival">Food Festival</option>
+                <option value="birthday">Celebrate a Birthday</option>
+                <option value="restaurant anniversary">Restaurant Anniversary</option>
+            </select>
+        </section>
+
+        <section id="festival-details" class="hidden">
+            <h2 id="festival-title"></h2>
+            <ul id="itinerary-list"></ul>
+            <button onclick="openBookingForm()">Book Your Spot</button>
+        </section>
+
+        <section id="booking-form-section" class="hidden">
+            <h2>Book for <span id="selected-festival"></span></h2>
+            <form id="booking-form">
+                <input type="hidden" id="event-name" name="eventName">
+                <label for="name">Your Name:</label>
+                <input type="text" id="name" name="name" required>
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+
+                <label for="guests">Number of Guests:</label>
+                <input type="number" id="guests" name="guests" min="1" required>
+
+                <button type="submit">Confirm Booking</button>
+                <button type="button" onclick="closeBookingForm()">Cancel</button>
+            </form>
+        </section>
+
+        <!-- Confirmation Section -->
+        <section id="confirmation-section" class="hidden">
+            <h2>Booking Confirmed!</h2>
+            <div id="confirmation-details">
+                <p><strong>Event:</strong> <span id="confirmation-event"></span></p>
+                <p><strong>Name:</strong> <span id="confirmation-name"></span></p>
+                <p><strong>Email:</strong> <span id="confirmation-email"></span></p>
+                <p><strong>Number of Guests:</strong> <span id="confirmation-guests"></span></p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // JavaScript code for the functionality of the page
+        const festivalDetails = {
+            diwali: {
+                title: "Diwali Night",
+                itinerary: [
+                    "7:00 PM - Welcome Drinks",
+                    "7:30 PM - Traditional Diwali Pooja",
+                    "8:00 PM - Fireworks Display",
+                    "8:30 PM - Dinner Buffet with Indian Delicacies"
+                ]
+            },
+            christmas: {
+                title: "Christmas Eve",
+                itinerary: [
+                    "6:00 PM - Carol Singing",
+                    "7:00 PM - Santa Claus Visit",
+                    "7:30 PM - Christmas Feast",
+                    "9:00 PM - Live Music and Dance"
+                ]
+            },
+            "new year": {
+                title: "New Year’s Eve Gala",
+                itinerary: [
+                    "8:00 PM - Cocktail Reception",
+                    "9:00 PM - Live Band Performance",
+                    "11:30 PM - Countdown to Midnight",
+                    "12:00 AM - Fireworks and Champagne Toast"
+                ]
+            },
+            eid: {
+                title: "Eid Celebration",
+                itinerary: [
+                    "6:00 PM - Eid Prayers",
+                    "7:00 PM - Traditional Eid Feast",
+                    "8:00 PM - Cultural Performances",
+                    "9:00 PM - Dessert Buffet"
+                ]
+            },
+            holi: {
+                title: "Holi Bash",
+                itinerary: [
+                    "4:00 PM - Holi Color Play",
+                    "6:00 PM - Live DJ and Dance",
+                    "7:30 PM - Indian Street Food Buffet",
+                    "9:00 PM - Bonfire and Music"
+                ]
+            },
+            thanksgiving: {
+                title: "Thanksgiving Dinner",
+                itinerary: [
+                    "6:00 PM - Welcome Cocktails",
+                    "7:00 PM - Thanksgiving Feast",
+                    "8:30 PM - Live Acoustic Performance",
+                    "9:30 PM - Dessert and Coffee"
+                ]
+            },
+            "food festival": {
+                title: "Food Festival",
+                itinerary: [
+                    "12:00 PM - Food Stalls Open",
+                    "2:00 PM - Live Cooking Demonstrations",
+                    "4:00 PM - Tasting Sessions",
+                    "6:00 PM - Grand Buffet Dinner"
+                ]
+            },
+            birthday: {
+                title: "Celebrate a Birthday",
+                itinerary: [
+                    "6:00 PM - Welcome Drinks",
+                    "7:00 PM - Personalized Cake Cutting",
+                    "7:30 PM - Dinner Buffet",
+                    "9:00 PM - Dance Floor Opens"
+                ]
+            },
+            "restaurant anniversary": {
+                title: "Restaurant Anniversary",
+                itinerary: [
+                    "6:00 PM - Cocktail Reception",
+                    "7:00 PM - Special Anniversary Menu",
+                    "8:30 PM - Live Entertainment",
+                    "10:00 PM - Fireworks Display"
+                ]
+            }
+        };
+
+        document.getElementById('festival-select').addEventListener('change', function() {
+            const festival = this.value;
+            const detailsSection = document.getElementById('festival-details');
+            const title = document.getElementById('festival-title');
+            const itineraryList = document.getElementById('itinerary-list');
+            
+            if (festival) {
+                const details = festivalDetails[festival];
+                title.textContent = details.title;
+                itineraryList.innerHTML = details.itinerary.map(item => `<li>${item}</li>`).join('');
+                detailsSection.classList.remove('hidden');
+                document.getElementById('event-name').value = festival;
+            } else {
+                detailsSection.classList.add('hidden');
+            }
+        });
+
+        function openBookingForm() {
+            const bookingSection = document.getElementById('booking-form-section');
+            bookingSection.classList.remove('hidden');
+            const selectedFestival = document.getElementById('festival-select').value;
+            document.getElementById('selected-festival').textContent = festivalDetails[selectedFestival].title;
+        }
+
+        function closeBookingForm() {
+            document.getElementById('booking-form-section').classList.add('hidden');
+        }
+
+        document.getElementById('booking-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const guests = document.getElementById('guests').value;
+            const eventName = document.getElementById('event-name').value;
+
+            // Display confirmation details
+            document.getElementById('confirmation-event').textContent = festivalDetails[eventName].title;
+            document.getElementById('confirmation-name').textContent = name;
+            document.getElementById('confirmation-email').textContent = email;
+            document.getElementById('confirmation-guests').textContent = guests;
+
+            // Show confirmation section
+            document.getElementById('confirmation-section').classList.remove('hidden');
+
+            // Hide booking form
+            closeBookingForm();
+        });
+    </script>
+
+</body>
+</html>

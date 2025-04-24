@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dessert Menu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .menu-container {
+            width: 80%;
+            margin: 0 auto;
+            padding-top: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .menu-section {
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            font-size: 28px;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .menu-category {
+            margin-bottom: 30px;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            justify-items: center;
+        }
+
+        .menu-item {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+            max-width: 250px;
+            width: 100%;
+        }
+
+        .menu-item:hover {
+            transform: scale(1.05);
+        }
+
+        .menu-item img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .item-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-top: 10px;
+        }
+
+        .item-price {
+            font-size: 18px;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .add-to-cart {
+            margin-top: 10px;
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .add-to-cart:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="menu-container">
+        <h1>Break Fast</h1>
+
+        <!-- Desserts Section -->
+        <div class="menu-section">
+            
+            <div class="menu-category">
+                
+                <div class="menu-grid">
+                    <!-- Break Fast Items -->
+                    <div class="menu-item">
+                        <img src="https://t3.ftcdn.net/jpg/03/21/94/18/360_F_321941897_1IemuLDDsuBlNyK3nCy8DpHgW3DKJu2B.jpg">
+                        <h4 class="item-name">Dosa</h4>
+                        <p class="item-price">$3.99</p>
+                    </div>
+
+                    <div class="menu-item">
+                        <img src="https://img.freepik.com/free-photo/delicious-indian-dosa-composition_23-2149086051.jpg">
+                        <h4 class="item-name">Panner Dosa</h4>
+                        <p class="item-price">$4.99</p>
+                      
+                    </div>
+
+                    <div class="menu-item">
+                        <img src="https://thumbs.dreamstime.com/b/curd-rice-staple-south-indian-lunch-perugu-annam-cooling-lunch-summers-yogurt-mixed-salt-tempered-78589727.jpg" alt="French crullers">
+                        <h4 class="item-name">Curd rice</h4>
+                        <p class="item-price">$2.99</p>
+                      
+                    </div>
+
+                    <div class="menu-item">
+                        <img src="https://t3.ftcdn.net/jpg/03/62/02/26/360_F_362022640_fZ6UM0JycJlFDdBiR1pYlNddKfdGvYwR.jpg" alt="Peach melba">
+                        <h4 class="item-name">Idli</h4>
+                        <p class="item-price">$3.99</p>
+                      
+                    </div>
+
+                    <div class="menu-item">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNMteLGqqwlcSg39TprbA4NW2pJWExSn5eRw&s" alt="Lemon and lime tart">
+                        <h4 class="item-name">Bread and Jam</h4>
+                        <p class="item-price">$5.99</p>
+                    
+                    </div>
+
+                    <div class="menu-item">
+                        <img src="https://t4.ftcdn.net/jpg/07/15/49/31/360_F_715493113_IU5H5erwQEpnMmN1kV6ijJft54HRSUyD.jpg" alt="Chocolate fondant">
+                        <h4 class="item-name">Puri</h4>
+                        <p class="item-price">$4.99</p>
+                   
+                    </div>
+
+                    <div class="menu-item">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrRlxWb1ExamU60F5H-yAwW121m6ydqp0MIQ&s" alt="Kahlúa crème caramel">
+                        <h4 class="item-name">Masala Dosa</h4>
+                        <p class="item-price">$5.99</p>
+                       
+                    </div>
+
+                    <div class="menu-item">
+                        <img src="https://www.shutterstock.com/image-photo/plain-ghee-dosa-south-india-260nw-2434603435.jpg" alt="Chocolate éclairs">
+                        <h4 class="item-name">Paper Dosa</h4>
+                        <p class="item-price">$4.99</p>
+                       
+                    </div>
+
+                    <div class="menu-item">
+                        <img src="https://www.shutterstock.com/image-photo/paneer-butter-dosa-chutney-sambar-600nw-1781711522.jpg" alt="Chocolate soufflé">
+                        <h4 class="item-name">Cheese Dosa</h4>
+                        <p class="item-price">$7.99</p>
+                       
+                    </div>
+
+                    <div class="menu-item">
+                        <img idth="150" height="150" src="https://media.istockphoto.com/id/1488737992/photo/upma-recipe-suji-ka-upma-rava-upma-with-red-and-coconut-chutney.jpg?s=612x612&w=0&k=20&c=dGTIRLT4c7XdC8xAqkumyuURqMAy3HNQccNjEQT3wmU=">
+                        <h4 class="item-name">Upma</h4>
+                        <p class="item-price">$3.99</p>
+                      
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

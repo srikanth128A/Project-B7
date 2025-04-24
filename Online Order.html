@@ -1,0 +1,2100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Online Order System</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        nav {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 15px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        nav a:hover {
+            background-color: #555;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .menu-section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .menu-section h2 {
+            color: #333;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .menu-item {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .menu-item img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .item-info {
+            padding: 15px;
+        }
+
+        .item-info h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+
+        .item-info p {
+            margin: 0 0 15px 0;
+            color: #666;
+        }
+
+        .add-to-cart {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .add-to-cart:hover {
+            background-color: #218838;
+        }
+
+        #cart {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            width: 300px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        #cart h2 {
+            margin-top: 0;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        #cart-items {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .remove-item {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 2px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        #total-price {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        #checkout-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            width: 100%;
+            margin-top: 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #checkout-btn:hover {
+            background-color: #0069d9;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .order-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .cancel-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .cancel-btn:hover {
+            background-color: #c82333;
+        }
+
+        #orders-section {
+            display: none;
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .back-btn {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .back-btn:hover {
+            background-color: #5a6268;
+        }
+
+        /* Payment methods styles */
+        .payment-methods {
+            margin: 20px 0;
+        }
+
+        .payment-method {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .payment-method:hover {
+            background-color: #f8f9fa;
+        }
+
+        .payment-method.selected {
+            background-color: #e7f4ff;
+            border-color: #007bff;
+        }
+
+        .payment-method input {
+            margin-right: 10px;
+        }
+
+        .payment-method img {
+            width: 40px;
+            height: 25px;
+            margin-right: 10px;
+            object-fit: contain;
+        }
+
+        /* Order tracking styles */
+        .track-order {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .track-order input {
+            padding: 10px;
+            width: 200px;
+            margin-right: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .track-order button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .track-order button:hover {
+            background-color: #0069d9;
+        }
+
+        .tracking-info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: white;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .tracking-steps {
+            margin-top: 15px;
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .tracking-step {
+            position: relative;
+            padding-bottom: 20px;
+            border-left: 2px solid #ddd;
+            padding-left: 20px;
+        }
+
+        .tracking-step:last-child {
+            border-left: 2px solid transparent;
+        }
+
+        .tracking-step.active {
+            border-left-color: #007bff;
+        }
+
+        .tracking-step::before {
+            content: '';
+            position: absolute;
+            left: -11px;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #ddd;
+        }
+
+        .tracking-step.active::before {
+            background-color: #007bff;
+        }
+
+        .tracking-step.completed::before {
+            background-color: #28a745;
+        }
+
+        .tracking-step h4 {
+            margin: 0 0 5px 0;
+        }
+
+        .tracking-step p {
+            margin: 0;
+            color: #666;
+        }
+
+        /* Status badges */
+        .status-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .status-confirmed {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        .status-preparing {
+            background-color: #ffc107;
+            color: #212529;
+        }
+
+        .status-on-the-way {
+            background-color: #fd7e14;
+            color: white;
+        }
+
+        .status-delivered {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .status-cancelled {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        /* Form styles */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input, 
+        .form-group textarea, 
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .form-group textarea {
+            height: 80px;
+            resize: vertical;
+        }
+
+        .required-field::after {
+            content: " *";
+            color: red;
+        }
+
+        /* Delivery time options */
+        .delivery-time-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .delivery-time-option {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .delivery-time-option.selected {
+            background-color: #e7f4ff;
+            border-color: #007bff;
+        }
+
+        .delivery-time-option input {
+            margin-right: 5px;
+        }
+
+        /* Invoice styles */
+        #invoice-content {
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+
+        .invoice-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 20px;
+        }
+
+        .invoice-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .invoice-table th {
+            background-color: #f8f9fa;
+            text-align: left;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .invoice-table td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .invoice-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .invoice-totals {
+            margin-top: 20px;
+            float: right;
+            width: 300px;
+        }
+
+        .invoice-totals table {
+            width: 100%;
+        }
+
+        .invoice-totals td {
+            padding: 8px;
+        }
+
+        .invoice-totals tr:last-child td {
+            font-weight: bold;
+            font-size: 1.1em;
+            border-top: 2px solid #ddd;
+        }
+
+        .invoice-footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #666;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            #cart {
+                position: static;
+                width: auto;
+                margin-top: 20px;
+            }
+            
+            nav {
+                position: static;
+                margin-top: 15px;
+                text-align: center;
+            }
+            
+            nav a {
+                display: inline-block;
+                margin: 5px;
+            }
+            
+            .delivery-time-options {
+                flex-direction: column;
+            }
+            
+            .invoice-details {
+                flex-direction: column;
+            }
+            
+            .invoice-totals {
+                width: 100%;
+                float: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">Online Order</div>
+        <nav>
+            <a href="#" id="view-orders">My Orders</a>
+            <a href="#cart">Cart</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div id="menu-sections">
+            <div class="menu-section">
+                <h2>Appetizers</h2>
+                <div class="menu-grid">
+                    <div class="menu-item">
+                        <img src="https://www.mygingergarlickitchen.com/wp-content/rich-markup-images/4x3/4x3-garlic-bread.jpg" alt="Garlic Bread">
+                        <div class="item-info">
+                            <h3>Garlic Bread</h3>
+                            <p>$5.99</p>
+                            <button class="add-to-cart" onclick="addToCart('Garlic Bread', 5.99)">Add to Cart</button>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <img src="https://healthyishfoods.com/wp-content/uploads/2023/06/CO0A9082-2.jpg" alt="Bruschetta">
+                        <div class="item-info">
+                            <h3>Bruschetta</h3>
+                            <p>$7.99</p>
+                            <button class="add-to-cart" onclick="addToCart('Bruschetta', 7.99)">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <h2>Main Courses</h2>
+                <div class="menu-grid">
+                    <div class="menu-item">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrfDnBKCRPOrEKxbmb_JW5H6ONT-N3jypMYQ&s" alt="Spaghetti">
+                        <div class="item-info">
+                            <h3>Spaghetti</h3>
+                            <p>$12.99</p>
+                            <button class="add-to-cart" onclick="addToCart('Spaghetti', 12.99)">Add to Cart</button>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <img src="https://www.inspiredtaste.net/wp-content/uploads/2024/07/Chicken-Alfredo-Recipe.jpg" alt="Chicken Alfredo">
+                        <div class="item-info">
+                            <h3>Chicken Alfredo</h3>
+                            <p>$14.99</p>
+                            <button class="add-to-cart" onclick="addToCart('Chicken Alfredo', 14.99)">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+  <!-- Desserts Section -->
+        <div class="menu-section">
+            <h2>DESSERTS</h2>
+            <div class="menu-category">
+                
+                <div class="menu-grid">
+                    <!-- Dessert Items -->
+                    <div class="menu-item">
+                        <img src="https://images.immediate.co.uk/production/volatile/sites/2/2021/01/HoneyMadeleines_c_AdamGibson-3e5b16a.jpg?quality=90&webp=true&resize=1100,733" alt="Honey madeleines">
+                        <h4 class="item-name">Honey madeleines</h4>
+                        <p class="item-price">$12.99</p>
+                        <button class="add-to-cart" onclick="addToCart('Honey madeleines', 12.99)">Add to Cart</button>
+                    </div>
+
+                    <div class="menu-item">
+                        <img src="https://th-i.thgim.com/public/incoming/vricut/article65937264.ece/alternates/LANDSCAPE_1200/Spicy%20Venue-apricot%20delight.jpg" alt="USA: Cheesecake">
+                        <h4 class="item-name">apricot delight</h4>
+                        <p class="item-price">$12.99</p>
+                       <button class="add-to-cart" onclick="addToCart('apricot delight', 12.99)">Add to Cart</button>
+                    </div>
+
+                    <div class="menu-item">
+                        <img src="https://images.immediate.co.uk/production/volatile/sites/2/2020/07/Crullers-1-f1f9a91-scaled.jpg?quality=90&webp=true&resize=1100,733" alt="French crullers">
+                        <h4 class="item-name">French crullers</h4>
+                        <p class="item-price">$12.99</p>
+                                   <button class="add-to-cart" onclick="addToCart('French crullers', 12.99)">Add to Cart</button>
+                    </div>
+
+                    <div class="menu-item">
+                        <img src="https://images.immediate.co.uk/production/volatile/sites/2/2023/07/PeachMelba-8d41ce0.jpeg?quality=90&webp=true&resize=1100,733" alt="Peach melba">
+                        <h4 class="item-name">Peach melba</h4>
+                        <p class="item-price">$12.99</p>
+                                           <button class="add-to-cart" onclick="addToCart('Peach melba', 12.99)">Add to Cart</button>
+                    </div>
+
+                    <div class="menu-item">
+                        <img src="https://images.immediate.co.uk/production/volatile/sites/2/2021/01/Olive_Feb21_6.1.21_LemonLimeTart-075-dd95d1d.jpg?quality=90&webp=true&resize=1100,733" alt="Lemon and lime tart">
+                        <h4 class="item-name">Lemon and lime tart</h4>
+                        <p class="item-price">$12.99</p>
+                                        <button class="add-to-cart" onclick="addToCart('Lemon and lime tart', 12.99)">Add to Cart</button>
+                    </div>
+
+                    <div class="menu-item">
+                        <img src="https://images.immediate.co.uk/production/volatile/sites/2/2014/12/3289.jpg?quality=90&webp=true&resize=375,341" alt="Chocolate fondant">
+                        <h4 class="item-name">Chocolate fondant</h4>
+                        <p class="item-price">$12.99</p>
+                                    <button class="add-to-cart" onclick="addToCart('Chocolate fondant', 12.99)">Add to Cart</button>
+                    </div>
+
+                    <div class="menu-item">
+                        <img src="https://images.immediate.co.uk/production/volatile/sites/2/2018/09/OLI-0918_HereNow-CremeCaramel_28005-cb31e47.jpg?quality=90&webp=true&resize=375,341" alt="Kahlúa crème caramel">
+                        <h4 class="item-name">Kahlúa crème caramel</h4>
+                        <p class="item-price">$12.99</p>
+                                     <button class="add-to-cart" onclick="addToCart('Kahlúa crème caramel', 12.99)">Add to Cart</button>
+                    </div>
+
+                    <div class="menu-item">
+                        <img src="https://images.immediate.co.uk/production/volatile/sites/2/2016/03/22114.jpg?quality=90&webp=true&resize=600,400" alt="Chocolate éclairs">
+                        <h4 class="item-name">Chocolate éclairs</h4>
+                        <p class="item-price">$12.99</p>
+                                  <button class="add-to-cart" onclick="addToCart('Chocolate éclairs', 12.99)">Add to Cart</button>
+                    </div>
+
+                    <div class="menu-item">
+                        <img src="https://images.immediate.co.uk/production/volatile/sites/2/2015/09/211213_Olive_Souffle_1949-6985ff3.jpg?quality=90&webp=true&crop=1309px,2178px,2480px,1652px&resize=1100,733" alt="Chocolate soufflé">
+                        <h4 class="item-name">Chocolate soufflé</h4>
+                        <p class="item-price">$12.99</p>
+                                       <button class="add-to-cart" onclick="addToCart('Chocolate soufflé', 12.99)">Add to Cart</button>
+                    </div>
+
+                    <div class="menu-item">
+                        <img src="https://images.immediate.co.uk/production/volatile/sites/2/2020/11/4_Olive_Get_It_Right_Pear_Tart_Tatin_DW.-1d2bf51.jpg?quality=90&webp=true&resize=1100,733" alt="Pear tarte tatin">
+                        <h4 class="item-name">Pear tarte tatin</h4>
+                        <p class="item-price">$12.99</p>
+                               <button class="add-to-cart" onclick="addToCart('Pear tarte tatin', 12.99)">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+<!-- Fast Food Section -->
+
+        <div class="menu-section">
+            <h2>FAST FOOD</h2>
+            <div class="menu-grid">
+                <div class="menu-item">
+                   
+                    <img src="https://i.pinimg.com/enabled_lo/236x/7b/69/ea/7b69ea839992e50e1d570d2c56bf70ab.jpg" alt="Noodles"><br>
+                    <span class="item-price">$3.95</span><br>
+                         <span class="item-name">Noodles</span><br>
+                           <button class="add-to-cart" onclick="addToCart('Noodles', 3.95)">Add to Cart</button>
+                </div>
+                <div class="menu-item">
+                    
+                    <img src="https://i.pinimg.com/236x/b9/ff/32/b9ff32c78f37aae474dded1be3d48d45.jpg" alt="Fried Rice"><br>
+                    <span class="item-price">$4.95</span><br>
+                      <span class="item-name">Fried Rice</span><br>
+                                <button class="add-to-cart" onclick="addToCart('Fried Rice', 4.95)">Add to Cart</button>
+                </div>
+                <div class="menu-item">
+                    
+                    <img src="https://i.pinimg.com/enabled_lo/236x/32/25/82/322582f81dd43d0cf57502c1d9a7a586.jpg" alt="Tacos"><br>
+                    <span class="item-price">$3.00</span><br>
+                       <span class="item-name">Tacos</span><br>
+                          <button class="add-to-cart" onclick="addToCart('Tacos', 3.00)">Add to Cart</button>
+                </div>
+                <div class="menu-item">
+                   
+                    <img src="https://i.pinimg.com/enabled_lo/236x/13/1f/fe/131ffe17fbaca82da95dd14dff884e17.jpg" alt="Burger"><br>
+                    <span class="item-price">$5.05</span><br>
+                      <span class="item-name">Burger</span><br>
+                                 <button class="add-to-cart" onclick="addToCart('Burger', 5.05)">Add to Cart</button>
+                </div>
+                <div class="menu-item">
+                  
+                    <img src="https://i.pinimg.com/236x/55/6e/f7/556ef7473594d261c3f16b14fa977ced.jpg" alt="Pizza"><br>
+                    <span class="item-price">$4.50</span><br>
+                       <span class="item-name">Pizza</span><br>
+                                      <button class="add-to-cart" onclick="addToCart('Pizza', 4.50)">Add to Cart</button>
+                </div>
+                <div class="menu-item">
+                   
+                    <img src="https://i.pinimg.com/enabled_lo/236x/3c/54/75/3c54751cdaf44bc2f20a36ece8c4860a.jpg" alt="Fries"><br>
+                    <span class="item-price">$2.10</span><br>
+ <span class="item-name">Fries</span><br>
+                          <button class="add-to-cart" onclick="addToCart('Fries', 2.10)">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+                         <!-- Non-Veg Starters -->
+                              <div class="menu-grid">
+                    <div class="menu-item">
+                        
+                        <img src="https://i.pinimg.com/236x/aa/2a/95/aa2a950fcb3d038f0661da5dc1bd5161.jpg" alt="Tandoori"><br>
+                        <span class="item-price">$12.99</span><br>
+                         <span class="item-name">Tandoori</span><br>
+                                  <button class="add-to-cart" onclick="addToCart('Tandoori', 12.99)">Add to Cart</button>
+                    </div>
+                    <div class="menu-item">
+                        
+                        <img src="https://i.pinimg.com/236x/ae/b8/a8/aeb8a8b359c017333621eb7b15d47afe.jpg" alt="Chicken 555"><br>
+                        <span class="item-price">$14.99</span><br>
+                         <span class="item-name">Chicken 555</span><br>
+                                  <button class="add-to-cart" onclick="addToCart('Chicken 555', 14.99)">Add to Cart</button>
+                    </div>
+                    <div class="menu-item">
+                        
+                        <img src="https://i.pinimg.com/enabled_lo/236x/e2/99/3c/e2993ccf6d5096870cdb0350b39e5dee.jpg" alt="Lemon Chicken"><br>
+                        <span class="item-price">$12.99</span><br>
+                          <span class="item-name">Lemon Chicken</span><br>
+                              <button class="add-to-cart" onclick="addToCart('Lemon Chicken', 12.99)">Add to Cart</button>
+                    </div>
+                    <div class="menu-item">
+                        
+                        <img src="https://i.pinimg.com/enabled_lo/236x/7a/f2/54/7af2543097506189dc093c0226b4305a.jpg" alt="Schezwan Chicken"><br>
+                        <span class="item-price">$12.99</span><br>
+                    <span class="item-name">Schezwan Chicken</span><br>
+                                    <button class="add-to-cart" onclick="addToCart('Schezwan Chicken', 12.99)">Add to Cart</button>
+                    </div>
+                    <div class="menu-item">
+                      
+                        <img src="https://i.pinimg.com/236x/e0/1e/ed/e01eed3594beac7038229e4c583e228e.jpg" alt="Dragon Chicken"><br>
+                        <span class="item-price">$12.99</span><br>
+                          <span class="item-name">Dragon Chicken</span><br>
+                                 <button class="add-to-cart" onclick="addToCart('Dragon Chicken', 12.99)">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Veg Starters -->
+            <div class="starter-category">
+                <h3>Veg Starter</h3>
+                <div class="menu-grid">
+                    <div class="menu-item">
+                      
+                        <img src="https://i.pinimg.com/enabled_lo/236x/f4/9d/97/f49d97cb1fd022c9914d12d2f973ac13.jpg" alt="Crispy Corn"><br>
+                        <span class="item-price">$11.99</span><br>
+                               <span class="item-name">Crispy Corn</span><br>
+                         <button class="add-to-cart" onclick="addToCart('Crispy Corn', 11.99)">Add to Cart</button>
+                    </div>
+                    <div class="menu-item">
+                       
+                        <img src="https://i.pinimg.com/236x/b0/8c/cd/b08ccd412f6066fe59ff7c81f06b9b4b.jpg" alt="Crispy Veg"><br>
+                        <span class="item-price">$13.99</span><br>
+                             <span class="item-name">Crispy Veg</span><br>
+                                  <button class="add-to-cart" onclick="addToCart('Crispy Veg', 13.99)">Add to Cart</button>
+                    </div>
+                    <div class="menu-item">
+                      
+                        <img src="https://i.pinimg.com/236x/ed/22/6b/ed226b2142d194cb875b2adbd1825a21.jpg" alt="Chilly Baby Corn"><br>
+                        <span class="item-price">$13.99</span><br>
+                            <span class="item-name">Chilly Baby Corn</span><br>
+                             <button class="add-to-cart" onclick="addToCart('Chilly Baby Corn', 13.99)">Add to Cart</button>
+                    </div>
+                    <div class="menu-item">
+                       
+                        <img src="https://i.pinimg.com/236x/bd/d2/cf/bdd2cf973419568da097ed78072c43d2.jpg" alt="Chilly Paneer"><br>
+                        <span class="item-price">$13.99</span><br>
+                              <span class="item-name">Chilly Paneer</span><br>
+                                    <button class="add-to-cart" onclick="addToCart('Chilly Paneer', 13.99)">Add to Cart</button>
+                    </div>
+                    <div class="menu-item">
+                        
+                        <img src="https://i.pinimg.com/236x/ed/23/35/ed2335a08f9dd1fcf6d59123eaf984c1.jpg" alt="Veg Spring Rolls"><br>
+                        <span class="item-price">$13.99</span><br>
+                          <span class="item-name">Veg Spring Rolls</span><br>
+                                   <button class="add-to-cart" onclick="addToCart('Veg Spring Rolls', 13.99)">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<!-- Shakes Section -->
+    <div class="menu-section">
+        <h2>Shakes</h2>
+        <div class="menu-category">
+            <h3>Shakes</h3>
+            <div class="menu-grid">
+                <!-- Shake Items -->
+                <div class="menu-item">
+                    <img src="https://food.fnr.sndimg.com/content/dam/images/food/fullset/2018/4/2/3/LS-Library_Cherry-Almond-Smoothie_s4x3.jpg.rend.hgtvcom.791.594.85.suffix/1522725245192.webp" alt="Cherry-Almond Smoothie">
+                    <h4>Cherry-Almond Smoothie</h4>
+                    <p class="price">$11.99</p>
+                               <button class="add-to-cart" onclick="addToCart('Cherry-Almond Smoothie', 11.99)">Add to Cart</button>
+                </div>
+
+    <div class="menu-item">
+                    <img src="https://food.fnr.sndimg.com/content/dam/images/food/fullset/2016/9/28/1/HXSP01ZH_Cotton-Candy-Milkshake_s3x4.jpg.rend.hgtvcom.791.1055.85.suffix/1475539317893.webp" alt="Cotton Candy Milkshake">
+                    <h4>Cotton Candy Milkshake</h4>
+                    <p class="price">$14.99</p>
+                                   <button class="add-to-cart" onclick="addToCart('Cotton Candy Milkshake', 14.99)">Add to Cart</button>
+                </div>
+
+    <div class="menu-item">
+                    <img src="https://food.fnr.sndimg.com/content/dam/images/food/fullset/2013/5/28/0/ZB0409H_biscuit-and-jam-shake-recipe_s4x3.jpg.rend.hgtvcom.791.594.85.suffix/1371616171954.webp" alt="Biscuit and Jam Shake">
+                    <h4>Biscuit and Jam Shake</h4>
+                    <p class="price">$9.22</p>
+                                  <button class="add-to-cart" onclick="addToCart('Biscuit and Jam Shake', 9.22)">Add to Cart</button>
+                </div>
+
+    <div class="menu-item">
+                    <img src="https://food.fnr.sndimg.com/content/dam/images/food/fullset/2017/6/30/0/KC1402H_blueberry-pie-milkshake_s3x4.jpg.rend.hgtvcom.791.1055.85.suffix/1498837657965.webp" alt="Blueberry Pie Milkshake">
+                    <h4>Blueberry Pie Milkshake</h4>
+                    <p class="price">$19</p>
+                                 <button class="add-to-cart" onclick="addToCart('Blueberry Pie Milkshake', 19)">Add to Cart</button>
+                </div>
+
+    <div class="menu-item">
+                    <img src="https://food.fnr.sndimg.com/content/dam/images/food/fullset/2015/12/20/1/CCTIA206H_Strawberry-Cheesecake-Milkshake_s4x3.jpg.rend.hgtvcom.791.594.85.suffix/1452198326522.webp" alt="Strawberry Cheesecake Milkshake">
+                    <h4>Strawberry Cheesecake Milkshake</h4>
+                    <p class="price">$14.9</p>
+                               <button class="add-to-cart" onclick="addToCart('Strawberry Cheesecake Milkshake', 14.99)">Add to Cart</button>
+                </div>
+
+    <div class="menu-item">
+                    <img src="https://food.fnr.sndimg.com/content/dam/images/food/fullset/2023/4/13/FNM_050123_Chocolate-Cheesecake-Milkshake_s4x3.jpg.rend.hgtvcom.791.594.85.suffix/1681396107730.webp" alt="Chocolate Cheesecake Milkshake">
+                    <h4>Chocolate Cheesecake Milkshake</h4>
+                    <p class="price">$19.99</p>
+                                 <button class="add-to-cart" onclick="addToCart('Chocolate Cheesecake Milkshake', 19.99)">Add to Cart</button>
+                </div>
+
+    <div class="menu-item">
+                    <img src="https://food.fnr.sndimg.com/content/dam/images/food/fullset/2013/4/23/0/TM1E49_Sorbet-Shakes_s4x3.jpg.rend.hgtvcom.791.594.85.suffix/1382542455442.webp" alt="Sorbet Shakes">
+                    <h4>Sorbet Shakes</h4>
+                    <p class="price">$11.99</p>
+                            <button class="add-to-cart" onclick="addToCart('Sorbet Shakes', 11.99)">Add to Cart</button>
+                </div>
+
+    <div class="menu-item">
+                    <img src="https://food.fnr.sndimg.com/content/dam/images/food/fullset/2019/6/10/KC2106_Peanut-Butter-Banana-Milkshake_s4x3.jpg.rend.hgtvcom.791.594.85.suffix/1560187532444.webp">
+                    <h4>Peanut Butter Banana Milkshake</h4>
+                    <p class="price">$13.99</p>
+                                <button class="add-to-cart" onclick="addToCart('Peanut Butter Banana Milkshake', 13.99)">Add to Cart</button>
+                </div>
+
+    <div class="menu-item">
+                    <img src="https://food.fnr.sndimg.com/content/dam/images/food/fullset/2019/1/11/0/YW1311_Key-Lime-Pie-Milkshake_s4x3.jpg.rend.hgtvcom.791.594.85.suffix/1547225183415.webp" alt="Key Lime Pie Milkshake">
+                    <h4>Key Lime Pie Milkshake</h4>
+                    <p class="price">$8.99</p>
+                                <button class="add-to-cart" onclick="addToCart('Key Lime Pie Milkshake', 8.99)">Add to Cart</button>
+                </div>
+
+    <div class="menu-item">
+                    <img src="https://food.fnr.sndimg.com/content/dam/images/food/fullset/2019/2/27/0/KC2008_Salted-Caramel-Milkshake_s4x3.jpg.rend.hgtvcom.791.594.85.suffix/1551310524475.webp" alt="Salted Caramel Pretzel">
+                    <h4>Salted Caramel Milkshake</h4>
+                    <p class="price">$16.99</p>
+                                   <button class="add-to-cart" onclick="addToCart('Salted Caramel Milkshake', 16.99)">Add to Cart</button>
+                </div>
+
+    <div class="menu-item">
+                    <img src="https://food.fnr.sndimg.com/content/dam/images/food/fullset/2021/02/03/BobbyFlay_BasicVanillaMilkshake_H.jpg.rend.hgtvcom.791.594.85.suffix/1612401890664.webp" alt="Salted Caramel Pretzel">
+                    <h4>Vanilla Milkshake</h4>
+                    <p class="price">$9.99</p>
+                    <button class="add-to-cart" onclick="addToCart('Vanilla Milkshake', 9.99)">Add to Cart</button>
+                </div>
+                <!-- Repeat similar blocks for other shake items -->
+            </div>
+        </div>
+    </div>
+
+<!-- Salad Section -->
+<div class="menu-section">
+    <h2>SALAD</h2>
+    <div class="menu-grid">
+        <div class="menu-item">
+            
+            <img src="https://i.pinimg.com/236x/19/ff/4b/19ff4b8d5392b1d384f8fbcf0c8e187d.jpg" alt="Caesar Salad"><br>
+              <span class="item-name">Caesar Salad</span><br>
+            <span class="item-price">$3.95</span><br>
+                              <button class="add-to-cart" onclick="addToCart('Caesar Salad', 3.95)">Add to Cart</button>
+        </div>
+        <div class="menu-item">
+            
+            <img src="https://i.pinimg.com/236x/83/93/eb/8393ebbbf4e8ce3e82f06963beb66bd0.jpg" alt="Cobb Salad"><br>
+            <span class="item-name">Cobb Salad</span><br>
+            <span class="item-price">$4.95</span><br>
+                         <button class="add-to-cart" onclick="addToCart('Cobb Salad', 4.95)">Add to Cart</button>
+        </div>
+        <div class="menu-item">
+           
+            <img src="https://i.pinimg.com/236x/cd/64/f3/cd64f3c196ecda75375b03b564cc119f.jpg" alt="Crab Louie Salad"><br>
+             <span class="item-name">Crab Louie Salad</span><br>
+            <span class="item-price">$3.00</span><br>
+                              <button class="add-to-cart" onclick="addToCart('Crab Louie Salad', 3.00)">Add to Cart</button>
+        </div>
+        <div class="menu-item">
+          
+            <img src="https://i.pinimg.com/236x/52/d3/7a/52d37a35114b2e8b4dd650cc061bc1ed.jpg" alt="Ambrosia Salad"><br>
+             <span class="item-name">Ambrosia Salad</span><br>
+            <span class="item-price">$5.05</span><br>
+                            <button class="add-to-cart" onclick="addToCart('Ambrosia Salad', 5.05)">Add to Cart</button>
+        </div>
+        <div class="menu-item">
+            
+            <img src="https://i.pinimg.com/236x/cf/ce/5d/cfce5d219bf6afdcd1ef5208ce584369.jpg" alt="Tabbouleh Salad"><br>
+            <span class="item-name">Tabbouleh Salad</span><br>
+            <span class="item-price">$4.50</span><br>
+                             <button class="add-to-cart" onclick="addToCart('Tabbouleh Salad', 4.50)">Add to Cart</button>
+        </div>
+        <div class="menu-item">
+            <img src="https://i.pinimg.com/enabled_lo/236x/0d/f2/d5/0df2d5cb225019fcceb8d134e4417e84.jpg" alt="Nicoise Salad"><br>
+                 
+            <span class="item-name">Nicoise Salad</span><br>
+            <span class="item-price">$2.10</span><br>
+                           <button class="add-to-cart" onclick="addToCart('Nicoise Salad', 2.10)">Add to Cart</button>
+        </div>
+        <div class="menu-item">
+         
+            <img src="https://i.pinimg.com/236x/22/ee/c0/22eec0a73c7725bf714083a673838ec3.jpg" alt="Israeli Salad"><br>
+                <span class="item-name">Israeli Salad</span><br>
+            <span class="item-price">$1.20</span><br>
+                           <button class="add-to-cart" onclick="addToCart('Israeli Salad', 1.20)">Add to Cart</button>
+        </div>
+        <div class="menu-item">
+            
+            <img src="https://i.pinimg.com/236x/71/58/20/71582016e38b26899e1192bc82e1b03c.jpg" alt="Caprese Salad"><br>
+             <span class="item-name">Caprese Salad</span><br>
+            <span class="item-price">$2.09</span><br>
+                               <button class="add-to-cart" onclick="addToCart('Caprese Salad', 2.09)">Add to Cart</button>
+        </div>
+        <div class="menu-item">
+            
+            <img src="https://i.pinimg.com/564x/c5/0c/cf/c50ccf49e566f4ca9d415490afc55428.jpg" alt="Southwest Chicken Salad"><br>
+                <span class="item-name">Southwest Chicken Salad</span><br>
+            <span class="item-price">$5.70</span><br>
+                             <button class="add-to-cart" onclick="addToCart('Southwest Chicken Salad', 5.70)">Add to Cart</button>
+        </div>
+        <div class="menu-item">
+           
+            <img src="https://i.pinimg.com/enabled_lo/236x/eb/cb/b9/ebcbb960d5d992314b90ba13029e05b3.jpg" alt="Italian Salad"><br>
+                <span class="item-name">Italian Salad</span><br>
+            <span class="item-price">$10.90</span><br>
+                           <button class="add-to-cart" onclick="addToCart('Italian Salad', 10.90)">Add to Cart</button>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Biryani Section -->
+        <div class="menu-section">
+            <h2>BIRYANI</h2>
+
+          
+            <div class="biryani-category">
+                <h3>Non-Veg Biryanis</h3>
+                <div class="menu-grid">
+                    <div class="menu-item">
+                        
+                        <img src="https://i.pinimg.com/474x/09/36/99/093699149a5da725826e1b39abe5bd07.jpg" alt="Karachi Chicken Biryani"><br>
+                        <span class="item-name">Karachi Chicken Biryani</span><br>
+                        <span class="item-price">$12.99</span><br>
+                          <button class="add-to-cart" onclick="addToCart('karachi Biryani', 12.99)">Add to Cart</button> 
+                    </div>
+                    <div class="menu-item">
+                        
+                        <img src="https://i.pinimg.com/474x/e1/e9/a9/e1e9a9bb4458f6cd0f0aba5fe4994f2a.jpg" alt="Beef Biryani"><br>
+                         <span class="item-name">Mutton Biryani</span><br>
+                        <span class="item-price">$14.99</span><br>
+                      <button class="add-to-cart" onclick="addToCart('Mutton Biryani', 14.99)">Add to Cart</button> 
+                    </div>
+                    <div class="menu-item">
+                        <img src="https://i.pinimg.com/474x/a3/03/6d/a3036dca0fbe405a0ab48320c85ab4e5.jpg" alt="Dum Biryani"><br>
+                                                 <span class="item-name">Dum Biryani</span><br>
+
+                        <span class="item-price">$12.99</span><br>
+                             <button class="add-to-cart" onclick="addToCart('Dum Biryani', 12.99)">Add to Cart</button> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<div class="menu-grid">
+            <div class="menu-item">
+              
+                <img src="https://i.ytimg.com/vi/Do7ZdUodDdw/maxresdefault.jpg" alt="Vegetarian Biryani"><br>
+                   <span class="item-name">Vegetarian Biryani</span><br>
+                <span class="item-price">$11.99</span><br>
+                <button class="add-to-cart" onclick="addToCart('Vegetarian Biryani', 11.99)">Add to Cart</button> 
+            </div>
+            <div class="menu-item">
+                
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXQSMoMlPJ3HcotCVY-RcYzWXvRpLRN408vA&s" alt="Paneer Biryani"><br>
+                <span class="item-name">Paneer Biryani</span><br>
+                <span class="item-price">$13.99</span><br>
+                <button class="add-to-cart" onclick="addToCart('Panner Biryani', 13.99)">Add to Cart</button> 
+            </div>
+            <div class="menu-item">
+              
+                <img src="https://i.pinimg.com/564x/9e/de/1e/9ede1e59f30be617db8bf21be347b116.jpg" alt="Kaju Biryani"><br>
+                   <span class="item-name">Kaju Biryani</span><br>
+                <span class="item-price">$13.99</span><br>
+                <button class="add-to-cart" onclick="addToCart('Kaju Biryani', 13.99)">Add to Cart</button> 
+            </div>
+            <div class="menu-item">
+                
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9wfHXmQS9eh4WVe5xp7m2E4sECoCbEF2hjA&s" alt="Makkani Biryani"><br>
+                   <span class="item-name">Makkani Biryani</span><br>
+                <span class="item-price">$13.99</span><br>
+                <button class="add-to-cart" onclick="addToCart('Makkani Biryani', 13.99)">Add to Cart</button> 
+            </div>
+           
+            <div class="menu-item">
+                
+                <img src="https://i.pinimg.com/236x/c5/4b/15/c54b15d15174eda54ab8192bc48f31e3.jpg" alt="Mushroom Biryani"><br>
+                <span class="item-name">Mushroom Biryani</span><br>
+                <span class="item-price">$13.99</span><br>
+                <button class="add-to-cart" onclick="addToCart('Mushroom Biryani', 13.99)">Add to Cart</button> 
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+ <div class="menu-container">
+        <h1>Break Fast</h1>
+
+        <!-- Desserts Section -->
+        <div class="menu-section">
+            
+            <div class="menu-category">
+                
+                <div class="menu-grid">
+                    <!-- Break Fast Items -->
+                    <div class="menu-item">
+                        <img src="https://t3.ftcdn.net/jpg/03/21/94/18/360_F_321941897_1IemuLDDsuBlNyK3nCy8DpHgW3DKJu2B.jpg">
+                        <h4 class="item-name">Dosa</h4>
+                        <p class="item-price">$3.99</p>
+                           <button class="add-to-cart" onclick="addToCart('Dosa', 3.99)">Add to Cart</button> 
+                    </div>
+
+                    <div class="menu-item">
+                        <img src="https://img.freepik.com/free-photo/delicious-indian-dosa-composition_23-2149086051.jpg">
+                        <h4 class="item-name">Panner Dosa</h4>
+                        <p class="item-price">$4.99</p>
+                        <button class="add-to-cart" onclick="addToCart('Panner Dosa', 4.99)">Add to Cart</button> 
+                    </div>
+
+                    <div class="menu-item">
+                        <img src="https://thumbs.dreamstime.com/b/curd-rice-staple-south-indian-lunch-perugu-annam-cooling-lunch-summers-yogurt-mixed-salt-tempered-78589727.jpg" alt="French crullers">
+                        <h4 class="item-name">Curd rice</h4>
+                        <p class="item-price">$2.99</p>
+                         <button class="add-to-cart" onclick="addToCart('Curd rice', 2.99)">Add to Cart</button> 
+                    </div>
+
+                    <div class="menu-item">
+                        <img src="https://t3.ftcdn.net/jpg/03/62/02/26/360_F_362022640_fZ6UM0JycJlFDdBiR1pYlNddKfdGvYwR.jpg" alt="Peach melba">
+                        <h4 class="item-name">Idli</h4>
+                        <p class="item-price">$3.99</p>
+                          <button class="add-to-cart" onclick="addToCart('Idli', 3.99)">Add to Cart</button> 
+                    </div>
+
+                    <div class="menu-item">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNMteLGqqwlcSg39TprbA4NW2pJWExSn5eRw&s" alt="Lemon and lime tart">
+                        <h4 class="item-name">Bread and Jam</h4>
+                        <p class="item-price">$5.99</p>
+                             <button class="add-to-cart" onclick="addToCart('Bread and Jam', 5.99)">Add to Cart</button> 
+                    </div>
+
+                    <div class="menu-item">
+                        <img src="https://t4.ftcdn.net/jpg/07/15/49/31/360_F_715493113_IU5H5erwQEpnMmN1kV6ijJft54HRSUyD.jpg" alt="Chocolate fondant">
+                        <h4 class="item-name">Puri</h4>
+                        <p class="item-price">$4.99</p>
+                               <button class="add-to-cart" onclick="addToCart('Puri', 4.99)">Add to Cart</button> 
+                    </div>
+
+                    <div class="menu-item">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrRlxWb1ExamU60F5H-yAwW121m6ydqp0MIQ&s" alt="Kahlúa crème caramel">
+                        <h4 class="item-name">Masala Dosa</h4>
+                        <p class="item-price">$5.99</p>
+                         <button class="add-to-cart" onclick="addToCart('Masala Dosa', 5.99)">Add to Cart</button> 
+                    </div>
+
+                    <div class="menu-item">
+                        <img src="https://www.shutterstock.com/image-photo/plain-ghee-dosa-south-india-260nw-2434603435.jpg" alt="Chocolate éclairs">
+                        <h4 class="item-name">Paper Dosa</h4>
+                        <p class="item-price">$4.99</p>
+                        <button class="add-to-cart" onclick="addToCart('Paper Dosa', 4.99)">Add to Cart</button> 
+                    </div>
+
+                    <div class="menu-item">
+                        <img src="https://www.shutterstock.com/image-photo/paneer-butter-dosa-chutney-sambar-600nw-1781711522.jpg" alt="Chocolate soufflé">
+                        <h4 class="item-name">Cheese Dosa</h4>
+                        <p class="item-price">$7.99</p>
+                         <button class="add-to-cart" onclick="addToCart('Cheese Dosa', 7.99)">Add to Cart</button>   
+                    </div>
+
+                    <div class="menu-item">
+                        <img idth="150" height="150" src="https://media.istockphoto.com/id/1488737992/photo/upma-recipe-suji-ka-upma-rava-upma-with-red-and-coconut-chutney.jpg?s=612x612&w=0&k=20&c=dGTIRLT4c7XdC8xAqkumyuURqMAy3HNQccNjEQT3wmU=">
+                        <h4 class="item-name">Upma</h4>
+                        <p class="item-price">$3.99</p>
+                              <button class="add-to-cart" onclick="addToCart('Upma', 3.99)">Add to Cart</button>                      
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+
+<!-- Moktails Section -->
+    <div class="menu-section">
+        <h2>Moktails</h2>
+        <div class="menu-category">
+            
+            <div class="menu-grid">
+                <!-- Ice Creams Items -->
+          
+    <div class="menu-item">
+                    <img  heigth="700" width="500" src="https://static.toiimg.com/thumb/imgsize-247346,msid-69483400,width-600,height-335,resizemode-75/69483400.jpg" alt="​Sparkling Cherry Limeade">
+                    <h4>​Sparkling Cherry Limeade</h4>
+                    <p class="price">$14.99</p>
+                                    <button class="add-to-cart" onclick="addToCart('Sparkling Cherry Limeade', 14.99)">Add to Cart</button>
+                </div>
+
+    <div class="menu-item">
+                    <img src="https://static.toiimg.com/thumb/imgsize-144146,msid-69483389,width-600,height-335,resizemode-75/69483389.jpg" alt="Berry Patch Mocktail">
+                    <h4>Berry Patch Mocktail</h4>
+                    <p class="price">$9.22</p>
+                                       <button class="add-to-cart" onclick="addToCart('Berry Patch Mocktail', 9.22)">Add to Cart</button>
+                </div>
+
+    <div class="menu-item">
+                    <img src="https://cf.ltkcdn.net/www/images/std/355536-800x534-cocunut-water-cocktail_768538648.webp" alt="Coconut Moktail">
+                    <h4>Coconut Moktail</h4>
+                    <p class="price">$19</p>
+                                   <button class="add-to-cart" onclick="addToCart('Coconut Moktail', 19)">Add to Cart</button>
+                </div>
+
+    <div class="menu-item">
+                    <img src="https://hips.hearstapps.com/hmg-prod/images/watermelon-agua-fresca3-1653576878.jpeg?crop=0.9974240082431737xw:1xh;center,top&resize=980:*" alt="Watermelon Agua Fresca">
+                    <h4>Watermelon Agua Fresca</h4>
+                    <p class="price">$14.9</p>
+                                      <button class="add-to-cart" onclick="addToCart('Watermelon Agua Fresca', 14.9)">Add to Cart</button>
+                </div>
+
+    <div class="menu-item">
+                    <img src="https://hips.hearstapps.com/hmg-prod/images/whipped-lemonade-1647986394.jpg?crop=0.8333333333333334xw:1xh;center,top&resize=980:*" alt="Whipped Lemonade">
+                    <h4>Whipped Lemonade</h4>
+                    <p class="price">$19.99</p>
+                                       <button class="add-to-cart" onclick="addToCart('Whipped Lemonade', 19.99)">Add to Cart</button>
+                </div>
+
+    <div class="menu-item">
+                    <img src="https://hips.hearstapps.com/hmg-prod/images/jack-frost-mocktail-secondary-66e1fdb150bdb.jpg?crop=0.669xw:1.00xh;0.316xw,0&resize=980:*" alt="Not-So-Naughty Jack Frosties">
+                    <h4>Not-So-Naughty Jack Frosties</h4>
+                    <p class="price">$11.99</p>
+                                 <button class="add-to-cart" onclick="addToCart('Not-So-Naughty Jack Frosties', 11.99)">Add to Cart</button>
+                </div>
+
+    <div class="menu-item">
+                    <img src="https://www.letseatcake.com/wp-content/uploads/2023/01/mocktail-recipes-3.jpg">
+                    <h4>Mimosa Mocktail</h4>
+                    <p class="price">$13.99</p>
+                                     <button class="add-to-cart" onclick="addToCart('Mimosa Mocktail', 13.99)">Add to Cart</button>
+                </div>
+
+    <div class="menu-item">
+                    <img src="https://hips.hearstapps.com/hmg-prod/images/brazilian-lemonade-vertical-66c4a1d9bc525.jpg?crop=0.834xw:1.00xh;0.0452xw,0&resize=980:*" alt=" Brazilian Lemonade">
+                    <h4> Brazilian Lemonade</h4>
+                    <p class="price">$8.99</p>
+                                     <button class="add-to-cart" onclick="addToCart('Brazilian Lemonade', 8.99)">Add to Cart</button>
+                </div>
+
+    <div class="menu-item">
+                    <img src="https://hips.hearstapps.com/hmg-prod/images/strawberry-lemonade-shrub-vertical-6605750492c9a.jpg?crop=0.8333957319356047xw:1xh;center,top&resize=980:*" alt="Strawberry-Lemonade Shrub">
+                    <h4>Strawberry-Lemonade Shrub</h4>
+                    <p class="price">$16.99</p>
+                                     <button class="add-to-cart" onclick="addToCart('Strawberry-Lemonade Shrub', 16.99)">Add to Cart</button>
+                </div>
+
+    <div class="menu-item">
+                    <img src="https://hips.hearstapps.com/hmg-prod/images/nojito-secondary-67771113e67dc.jpg?crop=0.668xw:1.00xh;0,0&resize=980:*" alt="NOjito">
+                    <h4>NOjito</h4>
+                    <p class="price">$9.99</p>
+                                     <button class="add-to-cart" onclick="addToCart('NOjito', 9.99)">Add to Cart</button>
+                </div>
+                <!-- Repeat similar blocks for other shake items -->
+            </div>
+        </div>
+    </div>
+
+
+
+        <div id="orders-section">
+            <h2>My Orders</h2>
+            <div class="track-order">
+                <h3>Track an Order</h3>
+                <input type="text" id="order-id-input" placeholder="Enter Order ID">
+                <button onclick="trackOrder()">Track</button>
+                <div id="tracking-result" class="tracking-info" style="display: none;">
+                    <h3>Order Status: <span id="tracking-status"></span></h3>
+                    <div id="tracking-steps" class="tracking-steps"></div>
+                </div>
+            </div>
+            <div id="orders-list"></div>
+            <button class="back-btn" onclick="hideOrders()">Back to Menu</button>
+        </div>
+    </div>
+
+    <div id="cart">
+        <h2>Your Cart</h2>
+        <div id="cart-items"></div>
+        <div id="total-price">Total: $0.00</div>
+        <button id="checkout-btn" onclick="showCustomerInfoModal()">Checkout</button>
+    </div>
+
+    <div id="customer-info-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Customer Information</h2>
+                <button class="close-btn" onclick="closeModal('customer-info-modal')">&times;</button>
+            </div>
+            <form id="customer-info-form">
+                <div class="form-group">
+                    <label class="required-field">Full Name</label>
+                    <input type="text" id="customer-name" required placeholder="Name">
+                </div>
+                <div class="form-group">
+                    <label class="required-field">Phone Number</label>
+                    <input type="tel" id="customer-phone" required placeholder="123-456-7890">
+                </div>
+                <div class="form-group">
+                    <label class="required-field">Email</label>
+                    <input type="email" id="customer-email" required placeholder="as@example.com">
+                </div>
+                <div class="form-group">
+                    <label class="required-field">Delivery Address</label>
+                    <input type="text" id="delivery-address" required placeholder="street,buliding name,plot no">
+                </div>
+                <div class="form-group">
+                    <label>Delivery Instructions</label>
+                    <textarea id="delivery-instructions" placeholder=" "></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="required-field">Delivery Time</label>
+                    <div class="delivery-time-options">
+                        <label class="delivery-time-option" onclick="selectDeliveryTime('asap')">
+                            <input type="radio" name="delivery-time" value="asap" checked> ASAP
+                        </label>
+                        <label class="delivery-time-option" onclick="selectDeliveryTime('later')">
+                            <input type="radio" name="delivery-time" value="later"> Schedule
+                        </label>
+                    </div>
+                    <div id="schedule-time-container" style="display: none; margin-top: 10px;">
+                        <input type="datetime-local" id="scheduled-time">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Special Instructions</label>
+                    <textarea id="special-instructions" placeholder="   "></textarea>
+                </div>
+                <button type="button" onclick="validateCustomerInfo()" style="width: 100%; padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">Continue to Payment</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="order-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Order Confirmation</h2>
+                <button class="close-btn" onclick="closeModal('order-modal')">&times;</button>
+            </div>
+            <div id="order-details"></div>
+        </div>
+    </div>
+
+    <div id="payment-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Payment Information</h2>
+                <button class="close-btn" onclick="closeModal('payment-modal')">&times;</button>
+            </div>
+            <div id="payment-details">
+                <h3>Order Summary</h3>
+                <div id="payment-items"></div>
+                <div id="customer-details-summary" style="margin: 15px 0; padding: 15px; background-color: #f8f9fa; border-radius: 5px;"></div>
+                <div id="payment-total" style="font-weight: bold; margin: 10px 0;"></div>
+                
+                <h3>Select Payment Method</h3>
+                <div class="payment-methods">
+                    <div class="payment-method" onclick="selectPaymentMethod('credit-card')">
+                        <input type="radio" name="payment-method" id="credit-card" value="credit-card" checked>
+                        <img src="https://trycake.com/cdn/shop/articles/credit-cards-processing.webp?v=1723590200" alt="Credit Card">
+                        <label for="credit-card">Credit/Debit Card</label>
+                    </div>
+                    <div class="payment-method" onclick="selectPaymentMethod('paypal')">
+                        <input type="radio" name="payment-method" id="paypal" value="paypal">
+                        <img src="https://memberpress.com/wp-content/uploads/2017/09/PayPal-2-768x432-1.png" alt="PayPal">
+                        <label for="paypal">PayPal</label>
+                    </div>
+                    <div class="payment-method" onclick="selectPaymentMethod('cash')">
+                        <input type="radio" name="payment-method" id="cash" value="cash">
+                        <img src="https://www.shutterstock.com/image-vector/cash-on-delivery-vector-icon-600nw-2503628203.jpg" alt="Cash">
+                        <label for="cash">Cash on Delivery</label>
+                    </div>
+                </div>
+                
+                <div id="credit-card-form" style="margin-top: 20px;">
+                    <h4>Card Details</h4>
+                    <div class="form-group">
+                        <label>Card Number</label>
+                        <input type="text" placeholder="1234 5678 9012 3456" id="card-number">
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <div style="flex: 1;">
+                            <label>Expiry Date</label>
+                            <input type="text" placeholder="MM/YY" id="card-expiry">
+                        </div>
+                        <div style="flex: 1;">
+                            <label>CVV</label>
+                            <input type="text" placeholder="123" id="card-cvv">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Name on Card</label>
+                        <input type="text" placeholder="John Doe" id="card-name">
+                    </div>
+                </div>
+                
+                <button id="confirm-payment" style="width: 100%; padding: 10px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 20px;" onclick="processPayment()">Confirm Payment</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="cancel-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Cancel Order</h2>
+                <button class="close-btn" onclick="closeModal('cancel-modal')">&times;</button>
+            </div>
+            <div id="cancel-details"></div>
+            <button id="confirm-cancel" class="cancel-btn">Confirm Cancellation</button>
+        </div>
+    </div>
+
+    <div id="invoice-modal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2>Order Invoice</h2>
+                <button class="close-btn" onclick="closeModal('invoice-modal')">&times;</button>
+            </div>
+            <div id="invoice-content">
+                <!-- Invoice content will be generated here -->
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <button onclick="printInvoice()" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;">Print Invoice</button>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let cart = [];
+        let orders = [];
+        const CANCELLATION_FEE = 0.1; // 10% cancellation fee
+        let currentOrderId = null;
+        let customerInfo = {};
+
+        // DOM elements
+        const cartItemsEl = document.getElementById('cart-items');
+        const totalPriceEl = document.getElementById('total-price');
+        const ordersListEl = document.getElementById('orders-list');
+        const ordersSectionEl = document.getElementById('orders-section');
+        const menuSectionsEl = document.getElementById('menu-sections');
+        const orderDetailsEl = document.getElementById('order-details');
+        const cancelDetailsEl = document.getElementById('cancel-details');
+        const confirmCancelBtn = document.getElementById('confirm-cancel');
+        const paymentItemsEl = document.getElementById('payment-items');
+        const paymentTotalEl = document.getElementById('payment-total');
+        const creditCardFormEl = document.getElementById('credit-card-form');
+        const trackingResultEl = document.getElementById('tracking-result');
+        const trackingStatusEl = document.getElementById('tracking-status');
+        const trackingStepsEl = document.getElementById('tracking-steps');
+        const customerDetailsSummaryEl = document.getElementById('customer-details-summary');
+        const scheduleTimeContainerEl = document.getElementById('schedule-time-container');
+        const scheduledTimeEl = document.getElementById('scheduled-time');
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', () => {
+            loadOrders();
+            updateCart();
+            
+            // Set minimum scheduled time to current time + 1 hour
+            const now = new Date();
+            const minTime = new Date(now.getTime() + 60 * 60 * 1000); // 1 hour from now
+            scheduledTimeEl.min = minTime.toISOString().slice(0, 16);
+            
+            // Hide credit card form for non-credit card payments initially
+            document.getElementById('paypal').addEventListener('change', () => {
+                creditCardFormEl.style.display = 'none';
+            });
+            
+            document.getElementById('cash').addEventListener('change', () => {
+                creditCardFormEl.style.display = 'none';
+            });
+            
+            document.getElementById('credit-card').addEventListener('change', () => {
+                creditCardFormEl.style.display = 'block';
+            });
+            
+            // Delivery time selection
+            document.querySelector('input[name="delivery-time"][value="later"]').addEventListener('change', () => {
+                scheduleTimeContainerEl.style.display = 'block';
+            });
+            
+            document.querySelector('input[name="delivery-time"][value="asap"]').addEventListener('change', () => {
+                scheduleTimeContainerEl.style.display = 'none';
+            });
+        });
+
+        // Load orders from localStorage
+        function loadOrders() {
+            const savedOrders = localStorage.getItem('restaurantOrders');
+            if (savedOrders) {
+                orders = JSON.parse(savedOrders);
+                // Convert string dates back to Date objects
+                orders.forEach(order => {
+                    order.date = new Date(order.date);
+                    if (order.cancellationDate) {
+                        order.cancellationDate = new Date(order.cancellationDate);
+                    }
+                    if (!order.statusHistory) {
+                        order.statusHistory = [
+                            { status: 'Confirmed', date: order.date }
+                        ];
+                    } else {
+                        order.statusHistory.forEach(sh => {
+                            sh.date = new Date(sh.date);
+                        });
+                    }
+                    if (order.scheduledDeliveryTime) {
+                        order.scheduledDeliveryTime = new Date(order.scheduledDeliveryTime);
+                    }
+                });
+            }
+        }
+
+        // Save orders to localStorage
+        function saveOrders() {
+            localStorage.setItem('restaurantOrders', JSON.stringify(orders));
+        }
+
+        // Cart functions
+        function addToCart(name, price) {
+            cart.push({ name, price });
+            updateCart();
+        }
+
+        function updateCart() {
+            cartItemsEl.innerHTML = '';
+            let total = 0;
+            
+            cart.forEach((item, index) => {
+                const itemEl = document.createElement('div');
+                itemEl.className = 'cart-item';
+                itemEl.innerHTML = `
+                    <span>${item.name}</span>
+                    <span>$${item.price.toFixed(2)}</span>
+                    <button class="remove-item" onclick="removeFromCart(${index})">X</button>
+                `;
+                cartItemsEl.appendChild(itemEl);
+                total += item.price;
+            });
+            
+            totalPriceEl.textContent = `Total: $${total.toFixed(2)}`;
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
+        // Customer info functions
+        function showCustomerInfoModal() {
+            if (cart.length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
+            
+            openModal('customer-info-modal');
+        }
+
+        function selectDeliveryTime(option) {
+            document.querySelectorAll('.delivery-time-option').forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            document.querySelector(`.delivery-time-option[onclick="selectDeliveryTime('${option}')"]`).classList.add('selected');
+            
+            if (option === 'later') {
+                scheduleTimeContainerEl.style.display = 'block';
+            } else {
+                scheduleTimeContainerEl.style.display = 'none';
+            }
+        }
+
+        function validateCustomerInfo() {
+            const name = document.getElementById('customer-name').value.trim();
+            const phone = document.getElementById('customer-phone').value.trim();
+            const email = document.getElementById('customer-email').value.trim();
+            const address = document.getElementById('delivery-address').value.trim();
+            const instructions = document.getElementById('delivery-instructions').value.trim();
+            const specialInstructions = document.getElementById('special-instructions').value.trim();
+            const deliveryTimeOption = document.querySelector('input[name="delivery-time"]:checked').value;
+            
+            if (!name || !phone || !email || !address) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            // Basic email validation
+            if (!email.includes('@') || !email.includes('.')) {
+                alert('Please enter a valid email address');
+                return;
+            }
+            
+            // Basic phone validation
+            if (phone.replace(/\D/g, '').length < 7) {
+                alert('Please enter a valid phone number');
+                return;
+            }
+            
+            // If scheduling for later, validate the time
+            let scheduledTime = null;
+            if (deliveryTimeOption === 'later') {
+                scheduledTime = scheduledTimeEl.value;
+                if (!scheduledTime) {
+                    alert('Please select a delivery time');
+                    return;
+                }
+            }
+            
+            // Save customer info
+            customerInfo = {
+                name,
+                phone,
+                email,
+                address,
+                instructions,
+                specialInstructions,
+                deliveryTimeOption,
+                scheduledTime: deliveryTimeOption === 'later' ? new Date(scheduledTime) : null
+            };
+            
+            closeModal('customer-info-modal');
+            showPaymentModal();
+        }
+
+        // Payment functions
+        function showPaymentModal() {
+            // Show order summary in payment modal
+            paymentItemsEl.innerHTML = '';
+            let subtotal = 0;
+            
+            cart.forEach(item => {
+                const itemEl = document.createElement('div');
+                itemEl.innerHTML = `
+                    <p>${item.name} - $${item.price.toFixed(2)}</p>
+                `;
+                paymentItemsEl.appendChild(itemEl);
+                subtotal += item.price;
+            });
+            
+            const tax = subtotal * 0.1; // 10% tax
+            const total = subtotal + tax;
+            
+            paymentTotalEl.innerHTML = `
+                <p>Subtotal: $${subtotal.toFixed(2)}</p>
+                <p>Tax (10%): $${tax.toFixed(2)}</p>
+                <p>Total: $${total.toFixed(2)}</p>
+            `;
+            
+            // Show customer details summary
+            let deliveryTimeText = customerInfo.deliveryTimeOption === 'asap' ? 
+                'ASAP (approximately 30-45 minutes)' : 
+                `Scheduled for ${customerInfo.scheduledTime.toLocaleString()}`;
+            
+            customerDetailsSummaryEl.innerHTML = `
+                <p><strong>Delivery to:</strong></p>
+                <p>${customerInfo.name}</p>
+                <p>${customerInfo.address}</p>
+                <p>${customerInfo.phone}</p>
+                <p>${customerInfo.email}</p>
+                <p><strong>Delivery Time:</strong> ${deliveryTimeText}</p>
+                ${customerInfo.instructions ? `<p><strong>Delivery Instructions:</strong> ${customerInfo.instructions}</p>` : ''}
+                ${customerInfo.specialInstructions ? `<p><strong>Special Instructions:</strong> ${customerInfo.specialInstructions}</p>` : ''}
+            `;
+            
+            openModal('payment-modal');
+        }
+
+        function selectPaymentMethod(method) {
+            document.querySelectorAll('.payment-method').forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            document.querySelector(`.payment-method[onclick="selectPaymentMethod('${method}')"]`).classList.add('selected');
+            
+            if (method === 'credit-card') {
+                creditCardFormEl.style.display = 'block';
+            } else {
+                creditCardFormEl.style.display = 'none';
+            }
+        }
+
+        function processPayment() {
+            const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
+            
+            // Validate credit card info if paying by card
+            if (paymentMethod === 'credit-card') {
+                const cardNumber = document.getElementById('card-number').value.trim();
+                const cardExpiry = document.getElementById('card-expiry').value.trim();
+                const cardCvv = document.getElementById('card-cvv').value.trim();
+                const cardName = document.getElementById('card-name').value.trim();
+                
+                if (!cardNumber || !cardExpiry || !cardCvv || !cardName) {
+                    alert('Please fill in all credit card details');
+                    return;
+                }
+                
+                // Basic card number validation
+                if (cardNumber.replace(/\D/g, '').length < 13) {
+                    alert('Please enter a valid card number');
+                    return;
+                }
+                
+                // Basic expiry date validation
+                if (!cardExpiry.match(/^\d{2}\/\d{2}$/)) {
+                    alert('Please enter expiry date in MM/YY format');
+                    return;
+                }
+                
+                // Basic CVV validation
+                if (cardCvv.length < 3) {
+                    alert('Please enter a valid CVV');
+                    return;
+                }
+            }
+            
+            // In a real app, you would process the payment here
+            // For demo purposes, we'll just simulate a successful payment
+            
+            setTimeout(() => {
+                closeModal('payment-modal');
+                checkout(paymentMethod);
+            }, 1000);
+        }
+
+        // Checkout function
+        function checkout(paymentMethod) {
+            const orderId = Math.floor(Math.random() * 1000000);
+            currentOrderId = orderId;
+            const orderDate = new Date();
+            const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
+            const tax = subtotal * 0.1; // 10% tax
+            const total = subtotal + tax;
+            
+            const order = {
+                id: orderId,
+                date: orderDate,
+                items: [...cart],
+                subtotal,
+                tax,
+                total,
+                status: 'Confirmed',
+                paymentMethod,
+                customerInfo: {...customerInfo},
+                statusHistory: [
+                    { status: 'Confirmed', date: orderDate }
+                ]
+            };
+            
+            orders.push(order);
+            saveOrders();
+            
+            // Show order confirmation
+            showOrderConfirmation(order);
+            
+            // Generate and show invoice
+            generateInvoice(order);
+            
+            // Clear cart
+            cart = [];
+            updateCart();
+            
+            // Simulate order progress
+            simulateOrderProgress(orderId);
+        }
+
+        function simulateOrderProgress(orderId) {
+            // Find the order
+            const order = orders.find(o => o.id === orderId);
+            if (!order) return;
+            
+            // Update status after 2 minutes
+            setTimeout(() => {
+                const date = new Date();
+                order.status = 'Preparing';
+                order.statusHistory.push({ status: 'Preparing', date });
+                saveOrders();
+                
+                // Update status after another 3 minutes
+                setTimeout(() => {
+                    const date = new Date();
+                    order.status = 'On the way';
+                    order.statusHistory.push({ status: 'On the way', date });
+                    saveOrders();
+                    
+                    // Update status after another 5 minutes
+                    setTimeout(() => {
+                        const date = new Date();
+                        order.status = 'Delivered';
+                        order.statusHistory.push({ status: 'Delivered', date });
+                        saveOrders();
+                    }, 5 * 60 * 1000); // 5 minutes
+                }, 3 * 60 * 1000); // 3 minutes
+            }, 2 * 60 * 1000); // 2 minutes
+        }
+
+        function showOrderConfirmation(order) {
+            orderDetailsEl.innerHTML = `
+                <p><strong>Order #${order.id}</strong></p>
+                <p>Date: ${order.date.toLocaleString()}</p>
+                <p>Status: <span class="status-badge status-${order.status.toLowerCase().replace(' ', '-')}">${order.status}</span></p>
+                <p>Payment Method: ${order.paymentMethod}</p>
+                <hr>
+                ${order.items.map(item => `
+                    <p>${item.name} - $${item.price.toFixed(2)}</p>
+                `).join('')}
+                <hr>
+                <p>Subtotal: $${order.subtotal.toFixed(2)}</p>
+                <p>Tax (10%): $${order.tax.toFixed(2)}</p>
+                <p><strong>Total: $${order.total.toFixed(2)}</strong></p>
+                <p>Thank you for your order!</p>
+                <button onclick="trackSpecificOrder(${order.id})" style="margin-top: 15px; padding: 8px 15px; background-color: #17a2b8; color: white; border: none; border-radius: 4px; cursor: pointer;">Track This Order</button>
+            `;
+            
+            openModal('order-modal');
+        }
+
+        // Invoice functions
+        function generateInvoice(order) {
+            const invoiceContent = document.getElementById('invoice-content');
+            const deliveryCharge = 5.00; // Example delivery charge
+            const gstRate = 0.1; // 10% GST
+            
+            // Calculate GST
+            const gstAmount = order.subtotal * gstRate;
+            const grandTotal = order.subtotal + gstAmount + deliveryCharge;
+            
+            // Format date
+            const formattedDate = order.date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            // Generate invoice HTML
+            invoiceContent.innerHTML = `
+                <div class="invoice-header">
+                    <h1 style="color: #333; margin-bottom: 5px;">Dining Spot</h1>
+                    <p style="margin: 0; color: #666;">Denton City, Texas, USA</p>
+                    <p style="margin: 0; color: #666;">Phone: 9392604717 | Email: diningspot@gmail.com</p>
+                </div>
+                
+                <div class="invoice-details">
+                    <div>
+                        <h3 style="margin-bottom: 5px; color: #333;">Invoice To:</h3>
+                        <p style="margin: 0;">${order.customerInfo.name}</p>
+                        <p style="margin: 0;">${order.customerInfo.address}</p>
+                        <p style="margin: 0;">${order.customerInfo.phone}</p>
+                        <p style="margin: 0;">${order.customerInfo.email}</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <h3 style="margin-bottom: 5px; color: #333;">Invoice Details</h3>
+                        <p style="margin: 0;"><strong>Invoice #:</strong> ${order.id}</p>
+                        <p style="margin: 0;"><strong>Date:</strong> ${formattedDate}</p>
+                        <p style="margin: 0;"><strong>Payment Method:</strong> ${order.paymentMethod}</p>
+                    </div>
+                </div>
+                
+                <table class="invoice-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Price</th>
+                            <th>Qty</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${order.items.map(item => `
+                            <tr>
+                                <td>${item.name}</td>
+                                <td>$${item.price.toFixed(2)}</td>
+                                <td>1</td>
+                                <td>$${item.price.toFixed(2)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                
+                <div class="invoice-totals">
+                    <table>
+                        <tr>
+                            <td>Subtotal:</td>
+                            <td>$${order.subtotal.toFixed(2)}</td>
+                        </tr>
+                        <tr>
+                            <td>GST (10%):</td>
+                            <td>$${gstAmount.toFixed(2)}</td>
+                        </tr>
+                        <tr>
+                            <td>Delivery Charge:</td>
+                            <td>$${deliveryCharge.toFixed(2)}</td>
+                        </tr>
+                        <tr>
+                            <td>Total:</td>
+                            <td>$${grandTotal.toFixed(2)}</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="invoice-footer">
+                    <p>Thank you for your order!</p>
+                    <p>For any questions, please contact us at diningspot@gmail.com or call 9392604717</p>
+                </div>
+            `;
+            
+            openModal('invoice-modal');
+        }
+
+        function printInvoice() {
+            const invoiceContent = document.getElementById('invoice-content').innerHTML;
+            const originalContent = document.body.innerHTML;
+            
+            document.body.innerHTML = invoiceContent;
+            window.print();
+            
+            document.body.innerHTML = originalContent;
+            updateCart();
+            loadOrders();
+        }
+
+        function downloadInvoice() {
+            alert('In a real application, this would generate and download a PDF invoice');
+            // In a real app, you would use a library like jsPDF or html2pdf to generate a PDF
+        }
+
+        // Order management functions
+        document.getElementById('view-orders').addEventListener('click', showOrders);
+
+        function showOrders() {
+            menuSectionsEl.style.display = 'none';
+            ordersSectionEl.style.display = 'block';
+            trackingResultEl.style.display = 'none';
+            
+            if (orders.length === 0) {
+                ordersListEl.innerHTML = '<p>You have no orders yet.</p>';
+                return;
+            }
+            
+            ordersListEl.innerHTML = '';
+            orders.forEach((order, index) => {
+                const orderEl = document.createElement('div');
+                orderEl.className = 'order-item';
+                orderEl.innerHTML = `
+                    <h3>Order #${order.id}</h3>
+                    <p>Date: ${order.date.toLocaleString()}</p>
+                    <p>Status: <span class="status-badge status-${order.status.toLowerCase().replace(' ', '-')}">${order.status}</span></p>
+                    <p>Total: $${order.total.toFixed(2)}</p>
+                    <button onclick="trackSpecificOrder(${order.id})" style="margin-top: 10px; padding: 5px 10px; background-color: #17a2b8; color: white; border: none; border-radius: 3px; cursor: pointer;">Track Order</button>
+                    ${order.status === 'Confirmed' || order.status === 'Preparing' ? 
+                        `<button class="cancel-btn" onclick="showCancelModal(${index})">Cancel Order</button>` : 
+                        order.status === 'Cancelled' ? 
+                        `<p>Cancelled on: ${order.cancellationDate.toLocaleString()}</p>
+                         <p>Refund Amount: $${(order.total * (1 - CANCELLATION_FEE)).toFixed(2)}</p>` : 
+                        ''}
+                    <button onclick="generateInvoiceForOrder(${order.id})" style="margin-top: 10px; padding: 5px 10px; background-color: #6c757d; color: white; border: none; border-radius: 3px; cursor: pointer;">View Invoice</button>
+                `;
+                ordersListEl.appendChild(orderEl);
+            });
+        }
+
+        function generateInvoiceForOrder(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (order) {
+                generateInvoice(order);
+            }
+        }
+
+        function hideOrders() {
+            menuSectionsEl.style.display = 'block';
+            ordersSectionEl.style.display = 'none';
+        }
+
+        // Order tracking functions
+        function trackOrder() {
+            const orderId = document.getElementById('order-id-input').value.trim();
+            if (!orderId) {
+                alert('Please enter an order ID');
+                return;
+            }
+            
+            trackSpecificOrder(parseInt(orderId));
+        }
+
+        function trackSpecificOrder(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (!order) {
+                alert('Order not found');
+                return;
+            }
+            
+            // Show orders section if not already visible
+            menuSectionsEl.style.display = 'none';
+            ordersSectionEl.style.display = 'block';
+            
+            // Update tracking info
+            trackingStatusEl.textContent = order.status;
+            trackingStatusEl.className = `status-badge status-${order.status.toLowerCase().replace(' ', '-')}`;
+            
+            // Create tracking steps
+            trackingStepsEl.innerHTML = '';
+            
+            const statuses = [
+                { status: 'Confirmed', label: 'Order Confirmed' },
+                { status: 'Preparing', label: 'Preparing Your Food' },
+                { status: 'On the way', label: 'On the Way' },
+                { status: 'Delivered', label: 'Delivered' },
+                { status: 'Cancelled', label: 'Cancelled' }
+            ];
+            
+            let currentStatusIndex = statuses.findIndex(s => s.status === order.status);
+            if (currentStatusIndex === -1) currentStatusIndex = 0;
+            
+            statuses.forEach((status, index) => {
+                if (order.status === 'Cancelled' && status.status !== 'Cancelled') {
+                    // Skip other statuses if order is cancelled
+                    return;
+                }
+                
+                const stepEl = document.createElement('div');
+                stepEl.className = `tracking-step ${index < currentStatusIndex ? 'completed' : ''} ${index === currentStatusIndex ? 'active' : ''}`;
+                
+                const statusDate = order.statusHistory.find(sh => sh.status === status.status);
+                const dateStr = statusDate ? statusDate.date.toLocaleString() : '';
+                
+                stepEl.innerHTML = `
+                    <h4>${status.label}</h4>
+                    ${dateStr ? `<p>${dateStr}</p>` : ''}
+                `;
+                
+                trackingStepsEl.appendChild(stepEl);
+            });
+            
+            trackingResultEl.style.display = 'block';
+            
+            // Scroll to tracking result
+            trackingResultEl.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Cancellation functions
+        function showCancelModal(orderIndex) {
+            const order = orders[orderIndex];
+            const refundAmount = order.total * (1 - CANCELLATION_FEE);
+            
+            cancelDetailsEl.innerHTML = `
+                <p>Are you sure you want to cancel this order?</p>
+                <p><strong>Order #${order.id}</strong></p>
+                <p>Original Total: $${order.total.toFixed(2)}</p>
+                <p>Cancellation Fee (10%): $${(order.total * CANCELLATION_FEE).toFixed(2)}</p>
+                <p>Refund Amount: $${refundAmount.toFixed(2)}</p>
+                <p>The refund will be processed within 30-40 Minutes.</p>
+            `;
+            
+            confirmCancelBtn.onclick = () => confirmCancellation(orderIndex);
+            openModal('cancel-modal');
+        }
+
+        function confirmCancellation(orderIndex) {
+            const order = orders[orderIndex];
+            order.status = 'Cancelled';
+            order.cancellationDate = new Date();
+            order.refundAmount = order.total * (1 - CANCELLATION_FEE);
+            order.statusHistory.push({ status: 'Cancelled', date: order.cancellationDate });
+            
+            saveOrders();
+            closeModal('cancel-modal');
+            showOrders();
+            
+            alert(`Order #${order.id} has been cancelled. You will receive a refund of $${order.refundAmount.toFixed(2)}.`);
+        }
+
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+    </script>
+</body>
+</html>
